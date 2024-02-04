@@ -984,3 +984,41 @@
   (cond ((zerop remaining) 1)
         (t (* n (huge-recursively (- remaining 1) n)))))
 
+;; 8.55 Write EVERY-OTHER, a recursive function that returns every other element of a list.
+
+(defun every-other (l)
+  (every-other-recursively 0 l))
+
+(defun every-other-recursively (n l)
+  (cond ((null l) nil)
+        ((oddp n) (every-other-recursively (+ 1 n) (cdr l)))
+        (t (cons (car l) (every-other-recursively (+ 1 n) (cdr l))))))
+
+(defun every-other-b (l)
+  (cond ((null l) nil)
+        (t (cons (car l) (every-other-b (cddr l))))))
+
+;; 8.57 Write LEFT-HALF, a recursive function in two parts that returns the first n/2 elements ofa list of length n. Write your function so that the list does not have to be of even length. (LEFT-HALF '(A B C D E)) should return (A B C). You may use LENGTH but not REVERSE in your definition.
+
+(defun left-half (l)
+  (left-half-recursively nil l))
+
+(defun left-half-recursively (l r)
+  (cond ((null r) l)
+        ((> (length r) (length l)) (left-half-recursively (append l (list (car r))) (cdr r)))
+        (t l)))
+
+(defun left-half-b (l)
+  (left-half-helper l (/ (length l) 2)))
+
+(defun left-half-helper (l n)
+  (cond ((not (plusp n)) nil)
+        (t (cons (car l) (left-half-helper (cdr l) (- n 1))))))
+
+;; 8.58 Write MERGE-LISTS, a function that takes two lists of numbers, each in increasing order, as input. The function should return a list that is a merger of the elements in its inputs, in order. (MERGE-LISTS '(1 2 6 8 10 12) '(2 3 5 9 13)) should return '(1 2 3 ... 13).
+
+(defun merge-lists (la lb)
+  (cond ((null la) lb)
+        ((null lb) la)
+        ((< (car la) (car lb)) (cons (car la) (merge-lists (cdr la) lb)))
+        (t (cons (car lb) (merge-lists la (cdr lb))))))
