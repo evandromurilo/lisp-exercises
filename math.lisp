@@ -1,3 +1,8 @@
+(defpackage :math
+  (:use :cl))
+
+(in-package :math)
+
 (defclass fraction ()
   ((numerator :initarg :numerator
               :reader fraction-numerator)
@@ -24,6 +29,31 @@
 (defmethod quotient ((f mixed-fraction))
   (/ (* (fraction-whole f) (fraction-numerator f)) (fraction-denominator f)))
 
+(defun factorp (a b)
+  "Diz se a é um fator de b."
+  (zerop (rem b a)))
+
+(defun primep-helper (x n)
+  (cond ((< n 2) t)
+        (t (and (> (rem x n) 0) (primep-helper x (- n 1))))))
+
+(defun primep (n)
+  "Diz se n é um número primo."
+  (primep-helper n (- n 1)))
+
+(defun prime-table (n)
+  "Retorna uma lista com todos os números primos até n."
+  (cond ((zerop n) nil)
+        ((primep n) (cons n (prime-table (- n 1))))
+        (t (prime-table (- n 1)))))
+
+(defun prime-factors-helper (table n)
+  "Table é inicialmente a tabela dos números primos até n, e vai sendo consumida progressivamente."
+  (cond ((equal n 1) nil)
+        ((factorp (car table) n) ;; encontramos um fator, agora procuramos os demais fatores após dividir n pelo fator
+         (cons (car table) (prime-factors-helper table (/ n (car table)))))
+        (t (prime-factors-helper (cdr table) n))))
+
 (defgeneric prime-factors (numbers)
   (:documentation "Retorna os fatores primos de um número no formato de lista."))
 
@@ -33,14 +63,6 @@
 (defmethod prime-factors ((f fraction))
   (list (prime-factors (fraction-numerator f)) (prime-factors (fraction-denominator f))))
 
-(defun prime-factors-helper (table n)
-  "Table é inicialmente a tabela dos números primos até n, e vai sendo consumida progressivamente."
-  (cond ((equal n 1) nil)
-        ((factorp (car table) n) ;; encontramos um fator, agora procuramos os demais fatores após dividir n pelo fator
-         (cons (car table) (prime-factors-helper table (/ n (car table)))))
-        (t (prime-factors-helper (cdr table) n))))
-
-
 (defgeneric simplify (f)
   (:documentation "Simplifica uma fração."))
 
@@ -49,25 +71,6 @@
   (let ((gcd (gcd (fraction-numerator f) (fraction-denominator f))))
     (make-fraction (/ (fraction-numerator f) gcd)
                    (/ (fraction-denominator f) gcd))))
-
-
-(defun factorp (a b)
-  "Diz se a é um fator de b."
-  (zerop (rem b a)))
-
-(defun primep (n)
-  "Diz se n é um número primo."
-  (primep-helper n (- n 1)))
-
-(defun primep-helper (x n)
-  (cond ((< n 2) t)
-        (t (and (> (rem x n) 0) (primep-helper x (- n 1))))))
-
-(defun prime-table (n)
-  "Retorna uma lista com todos os números primos até n."
-  (cond ((zerop n) nil)
-        ((primep n) (cons n (prime-table (- n 1))))
-        (t (prime-table (- n 1)))))
 
 (defmethod print-object ((obj fraction) stream)
   (print-unreadable-object (obj stream :type t)
@@ -89,7 +92,7 @@
 (defmethod to-mixed-fraction ((f mixed-fraction))
   f)
 
-(defgeneric proper-fraction-p
+(defgeneric proper-fraction-p (f)
     (:documentation "Diz se uma fração é própria."))
 
 (defmethod proper-fraction-p ((f fraction))
