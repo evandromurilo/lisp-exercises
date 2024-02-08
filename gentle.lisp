@@ -1022,3 +1022,69 @@
         ((null lb) la)
         ((< (car la) (car lb)) (cons (car la) (merge-lists (cdr la) lb)))
         (t (cons (car lb) (merge-lists la (cdr lb))))))
+
+;; 8.60 genealogy keyboard exercise
+
+(defvar family
+      '((colin nil nil)
+        (deirdre nil nil)
+        (arthur nil nil)
+        (kate nil nil)
+        (frank nil nil)
+        (linda nil nil)
+        (suzanne colin deirdre)
+        (bruce arthur kate)
+        (charles arthur kate)
+        (david arthur kate)
+        (ellen arthur kate)
+        (george frank linda)
+        (hillary frank linda)
+        (andre nil nil)
+        (tamara bruce suzanne)
+        (vincent bruce suzanne)
+        (wanda nil nil)
+        (ivan george ellen)
+        (julie george ellen)
+        (marie george ellen)
+        (nigel andre hillary)
+        (frederick nil tamara)
+        (zelda vincent wanda)
+        (joshua ivan wanda)
+        (quentin nil nil)
+        (robert quentin julie)
+        (olivia nigel marie)
+        (peter nigel marie)
+        (erica nil nil)
+        (yvette robert zelda)
+        (diane peter erica)))
+
+(defun father (x)
+  (cadr (assoc x family)))
+
+(defun mother (x)
+  (caddr (assoc x family)))
+
+(defun parents (x)
+  (cdr (assoc x family)))
+
+(defun children (x)
+  (mapcar #'car (remove-if-not #'(lambda (c) (member x (cdr c))) family)))
+
+(defun siblings-helper (x parents family)
+  (cond ((null family) nil)
+        ((> (length (intersection parents (cdar family))) 0)
+         (cons (caar family) (siblings-helper x parents (cdr family))))
+        (t (siblings-helper x parents (cdr family)))))
+
+(defun siblings (x)
+  (remove x (siblings-helper x (parents x) family)))
+
+(defun mapunion (f l)
+  (cond ((null l) nil)
+        (t (union (funcall f (car l)) (mapunion f (cdr l))))))
+
+(defun grandparents (x)
+  (remove nil (mapunion #'parents (parents x))))
+
+(defun cousins (x)
+  (remove nil (mapunion #'children (mapunion #'siblings (parents x)))))
