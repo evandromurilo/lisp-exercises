@@ -1088,3 +1088,11 @@
 
 (defun cousins (x)
   (remove nil (mapunion #'children (mapunion #'siblings (parents x)))))
+
+(defun descended-from-helper (x y)
+  (cond ((null y) nil)
+        ((member x y) t)
+        (t (descended-from x (mapunion #'children y)))))
+
+(defun descended-from (x y)
+  (descended-from-helper x (children y)))
