@@ -1096,3 +1096,18 @@
 
 (defun descended-from (x y)
   (descended-from-helper x (children y)))
+
+(defun ancestors-helper (x)
+  (cond ((null x) nil)
+        (t (append x (mapunion #'parents x)))))
+
+(defun ancestors (x)
+  (ancestors-helper (parents x)))
+
+(defun generation-gap-helper (x y n)
+  (cond ((null y) 0)
+        ((member x y) n)
+        (t (generation-gap-helper x (mapunion #'children y) (+ 1 n)))))
+
+(defun generation-gap (x y)
+  (generation-gap-helper x (children y) 1))
