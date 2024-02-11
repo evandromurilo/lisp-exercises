@@ -1111,3 +1111,31 @@
 
 (defun generation-gap (x y)
   (generation-gap-helper x (children y) 1))
+
+;; 8.61 Write a tail-recursive version of COUNT-UP
+
+(defun count-up-helper (x n)
+  (cond ((zerop x) n)
+        (t (count-up-helper (- x 1) (cons x n)))))
+
+(defun count-up (n)
+  (count-up-helper n nil))
+
+;; 8.62 Write a tail-recursive version of FACT.
+
+(defun fact-helper (n x)
+  (cond ((zerop n) x)
+        (t (fact-helper (- n 1) (* x n)))))
+
+(defun fact (n)
+  (fact-helper n 1))
+
+;; 8.63 Write tail-recursive versions of UNION, INTERSECTION, and SET-DIFFERENCE. Your functions need not return results in the same order as the built-in functions.
+
+(defun tail-union-helper (a x)
+  (cond ((null a) x)
+        ((member (car a) x) (tail-union-helper (cdr a) x))
+        (t (tail-union-helper (cdr a) (cons (car a) x)))))
+
+(defun tail-union (a b)
+  (tail-union-helper b a))
