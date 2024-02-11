@@ -1139,3 +1139,24 @@
 
 (defun tail-union (a b)
   (tail-union-helper b a))
+
+;; 8.64 Write a TREE-FIND-IF operator that returns the first non-NIL atom of a tree that satisfies a predicate. (TREE-FIND-IF #'ODDP '((2 4) (5 6) 7)) should return 5.
+
+(defun tree-find-if (fn x)
+  (cond ((null x) nil)
+        ((atom x) (if (funcall fn x) x nil))
+        (t (or (tree-find-if fn (car x)) (tree-find-if fn (cdr x))))))
+
+;; 8.65 Use LABELS to write versions of TR-COUNT-SLICES and TR-REVERSE.
+
+(defun tr-count-slices (x)
+  (labels ((count-helper (x n)
+             (cond ((null x) n)
+                   (t (count-helper (cdr x) (+ 1 n))))))
+    (count-helper x 0)))
+
+(defun tr-reverse (x)
+  (labels ((reverse-helper (x r)
+             (cond ((null x) r)
+                   (t (reverse-helper (cdr x) (cons (car x) r))))))
+    (reverse-helper x nil)))
