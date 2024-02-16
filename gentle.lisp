@@ -1,3 +1,4 @@
+
 ;; 3.23. Write each of the following functions in Church's lambda notation:
 ;; DOUBLE
 (lambda (x) (* x 2))
@@ -1160,3 +1161,32 @@
              (cond ((null x) r)
                    (t (reverse-helper (cdr x) (cons (car x) r))))))
     (reverse-helper x nil)))
+
+;; 8.66 Write ARITH-EVAL, a function that evaluates arithmetic expressions. (ARITH-EVAL (2 + (3 * 4))) should return 14.
+
+(defun arith-eval (exp)
+  (cond ((numberp exp) exp)
+        (t (funcall (second exp) (arith-eval (first exp)) (arith-eval (third exp))))))
+
+        
+;; 8.67 Write a predicate LEGALP that returns T if its input is a legal arithmetic expression.
+
+(defun equal-any (x l)
+  (cond ((null l) nil)
+        (t (or (equal x (car l)) (equal-any x (cdr l))))))
+
+(defun legalp (exp)
+  (cond ((numberp exp) t)
+        ((not (listp exp)) nil)
+        ((equal-any (second exp) '(/ + * -))
+         (and (legalp (first exp)) (legalp (third exp))))
+        (t nil)))
+
+;; 8.70 Write the FACTOR-TREE function. (FACTOR-TREE 60) should return the list (60 2 (30 2 (15 3 5))).
+
+(defun factor-tree (n)
+  (labels ((factor-tree-help (x p)
+             (cond ((equal x p) p)
+                    ((zerop (rem x p)) (list x p (factor-tree-help (/ x p) 2)))
+                    (t (factor-tree-help x (+ 1 p))))))
+    (factor-tree-help n 2)))
