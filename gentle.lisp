@@ -1190,3 +1190,42 @@
                     ((zerop (rem x p)) (list x p (factor-tree-help (/ x p) 2)))
                     (t (factor-tree-help x (+ 1 p))))))
     (factor-tree-help n 2)))
+
+;; 9.1 Write a function to pritn the following saing on the display (...).
+
+(defun say-saying ()
+  (format t "There are old pilots,~%and there are bold pilots,~%but there are no old bold pilots."))
+
+;; 9.2 Write a recursive function DRAW-LINE that draws a line of a specified length by doing (FORMAT T "*") the correct number of times (DRAW-LINE 10) should produce **********.
+
+(defun draw-line (n)
+  (cond ((zerop n) (format t "~%"))
+        (t (format t "*")
+           (draw-line (- n 1)))))
+
+;; 9.3 Write a recursive function DRAW-BOX that calls DRAW-LINE repeatedly to draw a box of specified dimensions.
+
+(defun draw-box (w h)
+  (cond ((zerop h) (format t "~%"))
+        (t (draw-line w)
+           (draw-box w (- h 1)))))
+
+;; 9.4 Write a recursive function NINETY-NINE-BOTTLES that sing the song.
+
+(defun ninety-nine-bottles (n)
+  (cond ((zerop n) (format t "~&No more bottles of beer on the wall!~%"))
+        (t (format t "~&~S bottles of beer on the wall.~%" n)
+           (format t "~S bottle of beer!~%" n)
+           (format t "Take one down,~%")
+           (format t "Pass it around,~%~%")
+           (ninety-nine-bottles (- n 1)))))
+                   
+;; 9.5 Write a function PRINT-BOARD that takes a list of nine elements as input. Each element will be an X, an O, or NIL. PRINT-BOARD should display the corresponding tic-tac-toe board.
+
+(defun print-board (l)
+  (let ((l (mapcar #'(lambda (x) (if (null x) " " x)) l)))
+    (format t "~& ~A | ~A | ~A~%" (first l) (second l) (third l))
+    (format t "-----------~%")
+    (format t "~& ~A | ~A | ~A~%" (fourth l) (fifth l) (sixth l))
+    (format t "-----------~%")
+    (format t "~& ~A | ~A | ~A~%" (seventh l) (eighth l) (ninth l))))
