@@ -1229,3 +1229,24 @@
     (format t "~& ~A | ~A | ~A~%" (fourth l) (fifth l) (sixth l))
     (format t "-----------~%")
     (format t "~& ~A | ~A | ~A~%" (seventh l) (eighth l) (ninth l))))
+
+;; 9.6 Write a function to compute an hourly worker's gross pay given an hourly wage in dollars and the number of hours he or she worked. Your function should prompt for each input it needs by printng a message in English. It should display its answer in English as well.
+
+(defun hourly-wage ()
+  (format t "~&What is your hourly pay? ")
+  (let ((pay (read)))
+    (format t "~&How many hours have you worked? ")
+    (let ((hours-worked (read)))
+      (format t "~&Your gross pay is $~S~%" (* hours-worked pay)))))
+
+;; 9.7 The COOKIE-MONSTER function keeps reading data from the terminal until it reads the symbol COOKIE. Write COOKIE-MONSTER.
+
+(defun cookie-monster ()
+  (format t "~&Give me cookie!!!~%")
+  (format t "~&Cookie? ")
+  (let ((in (read)))
+    (cond ((equal in 'cookie)
+           (format t "~&Thank you! ...Muunch munch munch... BURP"))
+          (t
+           (format t "~&No want ~A...~%~%" in)
+           (cookie-monster)))))
