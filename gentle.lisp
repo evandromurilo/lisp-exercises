@@ -1250,3 +1250,42 @@
           (t
            (format t "~&No want ~A...~%~%" in)
            (cookie-monster)))))
+
+;; 9.10 graph keyboard exercise
+
+(defun space-over (n)
+  (cond ((< n 0) (format t "Error!"))
+        ((zerop n) nil)
+        (t
+         (format t " ")
+         (space-over (- n 1)))))
+
+(defun test (n)
+  (format t "~%>>>")
+  (space-over n)
+  (format t "<<<"))
+
+(defun plot-points (s ys)
+  (cond ((null ys) nil)
+        (t
+         (space-over (first ys))
+         (format t "~A~%" s)
+         (plot-points s (rest ys)))))
+
+(defun generate (m n)
+  (cond ((> m n) nil)
+        (t (cons m (generate (+ m 1) n)))))
+
+(defun square (n)
+  (* n n))
+
+(defun make-graph ()
+  (format t "~&Tell me the the function to graph: ")
+  (let ((fn (read)))
+    (format t "~&Start: ")
+    (let ((start (read)))
+      (format t "~&End: ")
+      (let ((end (read)))
+        (format t "~&Plotting string: ")
+        (let ((s (read)))
+        (plot-points s (mapcar fn (reverse (generate start end)))))))))
