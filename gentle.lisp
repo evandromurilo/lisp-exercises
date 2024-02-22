@@ -1289,3 +1289,14 @@
         (format t "~&Plotting string: ")
         (let ((s (read)))
         (plot-points s (mapcar fn (reverse (generate start end)))))))))
+
+;; 9.11 Write a function DOT-PRIN1 that takes a list as input and prints it in dot notation. DOT-PRIN1 will print parentheses by (FORMAT t "(") and (FORMAT T ")"), and dots by (FORMAT T "."), and will call itself recursively to print lists within lists. DOT-PRINT1 should return NIL as it result.
+
+(defun dot-prin1 (l)
+  (cond ((atom l) (prin1 l))
+        (t 
+         (format t "(")
+         (dot-prin1 (car l))
+         (format t " . ")
+         (dot-prin1 (cdr l))
+         (format t ")"))))
