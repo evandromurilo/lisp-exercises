@@ -1300,3 +1300,21 @@
          (format t " . ")
          (dot-prin1 (cdr l))
          (format t ")"))))
+
+;; 9.15 Write HYBRID-PRIN1.
+
+(defun hybrid-prin1 (x)
+  (format t "(")
+  (car-prin1 (car x))
+  (cdr-prin1 (cdr x)))
+
+(defun car-prin1 (x)
+  (cond ((atom x) (prin1 x))
+        (t (hybrid-prin1 x))))
+
+(defun cdr-prin1 (x)
+  (cond ((null x) (format t ")"))
+        ((atom x) (format t " . ~S)" x))
+        (t (format t " ")
+           (car-prin1 (car x))
+           (cdr-prin1 (cdr x)))))
