@@ -1318,3 +1318,36 @@
         (t (format t " ")
            (car-prin1 (car x))
            (cdr-prin1 (cdr x)))))
+
+;; 10.2 Rewrite the lemonade stand SELL function to use INCF instead of SETF.
+
+(defvar *total-glasses* 0)
+
+(defun sell (n)
+  "Ye Olde Lemonade Stand: Sales by the Glass."
+  (incf *total-glasses* n)
+  (format t
+          "~&That makes ~S glasses so far today."
+          *total-glasses*))
+
+;; 10.3 Modify the MEET function to keep a count of how many people have been met more than once. Store this count in a global variable.
+
+(defvar *friends* nil)
+(defvar *repeated-meetings* 0)
+
+(defun meet (person)
+  (cond ((equal person (first *friends*))
+         (incf *repeated-meetings*)
+         'we-just-met)
+        ((member person *friends*)
+         (incf *repeated-meetings*)
+         'we-know-each-other)
+        (t (push person *friends*) 'pleased-to-meet-you)))
+
+;; 10.4 Write a function FORGET that removes a person from the *FRIENDS* list. If the person wasn't on the list in the first place, the function should complain.
+
+(defun forget (person)
+  (cond ((member person *friends*)
+         (setf *friends* (remove-if (lambda (x) (equal person x)) *friends*))
+         'NOT-FRIENDS-ANYMORE)
+        (t 'THIS-PERSON-IS-NOT-YOUR-FRIEND)))
