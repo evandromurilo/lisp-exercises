@@ -32,6 +32,10 @@
   "Return a list of the possible rewrites for this category."
   (rule-rhs (assoc category *grammar*)))
 
+(defun terminalp (category)
+  "Return t if the category is terminal, that is, if there are no possible rewrites."
+  (null (rewrites category)))
+
 (defun one-of (set)
   "Return one random element of set as a list."
   (list (random-elt set)))
@@ -43,3 +47,17 @@
 (defun mappend (fn the-list)
   "Apply fn to each element of list and append the results."
   (apply #'append (mapcar fn the-list)))
+
+;; Exercise 2.1 [m] Write a version of gnerate that uses cond but avoids calling rewrite twice.
+;; (só consegui pensar em colocar um let em volta do cond)
+
+;; Exercise 2.2 [m] Write a version of generate that explicitly differentiates between terminal symbols (those with no rewrite rules) and nonterminal symbols.
+
+(defun generate-b (phrase)
+  "Generate a random sentence of phrase."
+  (cond ((listp phrase)
+         (mappend #'generate phrase))
+        ((terminalp phrase)
+         (list phrase))
+        (t
+         (generate (random-elt (rewrites phrase))))))
