@@ -1,46 +1,26 @@
 ;; code from the chapter 2
 
-(defun sentence ()
-  (append (noun-phrase) (verb-phrase)))
+(defparameter *simple-grammar*
+  '((sentence -> (noun-phrase verb-phrase))
+    (noun-phrase -> (Article Noun))
+    (verb-phrase -> (Verb noun-phrase))
+    (Article -> the a)
+    (Noun -> man ball woman table)
+    (Verb -> hit took saw liked))
+  "A grammar for a trivial subset of English.")
 
-(defun noun-phrase ()
-  (append (Article) (Adj*) (Noun) (PP*)))
+(defvar *grammar* *simple-grammar*
+  "The grammar used by generate. Initially, this is *simple-grammar*, but we can switch to other grammars.")
 
-(defun verb-phrase ()
-  (append (Verb) (noun-phrase)))
+(defun generate (rule-name)
+  "Generate a valid sequence for the given rule on the grammar."
+  (let ((rule (cddr (assoc rule-name *grammar*))))
+    (if (listp (car rule))
+        (apply #'append (mapcar #'generate (car rule)))
+        (one-of rule))))
 
-(defun Article ()
-  (one-of '(the a)))
+(defun one-of (lst)
+  "Return one random element of lst as a list."
+  (list (elt lst (random (length lst)))))
 
-(defun Noun ()
-  (one-of '(man ball woman table)))
-
-(defun Verb ()
-  (one-of '(hit took saw liked)))
-
-(defun Adj* ()
-  (if (= (random 2) 0)
-      nil
-      (append (Adj) (Adj*))))
-
-(defun PP* ()
-  (if (random-elt '(t nil))
-      (append (PP) (PP*))
-      nil))
-
-(defun PP ()
-  (append (Prep) (noun-phrase)))
-
-(defun Adj ()
-  (one-of '(big little blue green adiabatic)))
-
-(defun Prep ()
-  (one-of '(to in by with on)))
-
-(defun one-of (set)
-  "Pick one element of set, and make a list of it."
-  (list (random-elt set)))
-
-(defun random-elt (choices)
-  "Choose an element from a list at random."
-  (elt choices (random (length choices))))
+    
