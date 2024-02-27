@@ -1,4 +1,4 @@
-(1defparameter *player* 1)
+(defparameter *player* 1)
 (defparameter *computer* 10)
 (defparameter *triplets* '((1 2 3) (4 5 6) (7 8 9)
                            (1 4 7) (2 5 8) (3 6 9)
@@ -42,14 +42,14 @@
 
 (defun player-turn (board)
   "The player takes a turn."
-  (format-board board)
+  (print-board board)
   (unless (check-game-over board)
     (let ((pos (read-valid-pos board)))
       (computer-turn (play *player* pos board)))))
 
 (defun computer-turn (board)
   "The computer takes a turn."
-  (format-board board)
+  (print-board board)
   (unless (check-game-over board)
     (let ((move (calculate-move board)))
       (format t "~&~A~%" (move-explanation move))
@@ -118,26 +118,26 @@
   (and (>= n lower)
        (<= n upper)))
 
-(defun format-board (board)
+(defun print-board (board)
   "Prints the tic tac toe board."
-  (format-row (list (nth 1 board) (nth 2 board) (nth 3 board)))
-  (format-separator)
-  (format-row (list (nth 4 board) (nth 5 board) (nth 6 board)))
-  (format-separator)
-  (format-row (list (nth 7 board) (nth 8 board) (nth 9 board))))
+  (print-row (nth 1 board) (nth 2 board) (nth 3 board))
+  (print-separator)
+  (print-row (nth 4 board) (nth 5 board) (nth 6 board))
+  (print-separator)
+  (print-row (nth 7 board) (nth 8 board) (nth 9 board)))
 
-(defun format-separator ()
+(defun print-separator ()
   "Prints the board horizontal line."
   (format t "---+---+---~%"))
 
-(defun format-row (row)
+(defun print-row (x y z)
   "Prints a row of the tic tac toe board."
   (format t " ~A | ~A | ~A~%"
-          (player-str (first row))
-          (player-str (second row))
-          (player-str (third row))))
+          (convert-to-letter x)
+          (convert-to-letter y)
+          (convert-to-letter z)))
 
-(defun player-str (p)
+(defun convert-to-letter (p)
   "Returns the string representation of p."
   (cond ((equal p 0) " ")
         ((equal p 1) "X")
