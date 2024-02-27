@@ -1,8 +1,8 @@
 (defun compress (lst)
   "Compress a list of atoms grouping repeating sequences: (a a a b c c) becomes ((3 a) b (2 c))."
-  (if (null lst)
-      nil
-      (compr (cdr lst) (car lst) 1)))
+  (if (consp lst)
+      (compr (cdr lst) (car lst) 1)
+      lst))
 
 (defun compr (lst last n)
   "Do the hard work for compress, should not be called isolated."
