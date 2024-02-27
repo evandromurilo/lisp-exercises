@@ -1,19 +1,18 @@
-(defparameter *player* 1)
+(1defparameter *player* 1)
 (defparameter *computer* 10)
 (defparameter *triplets* '((1 2 3) (4 5 6) (7 8 9)
                            (1 4 7) (2 5 8) (3 6 9)
                            (1 5 9) (3 5 7)))
-(defparameter *initial-board* '(board 0 0 0 0 0 0 0 0 0))
 
-(defun init-board ()
+(defun make-board ()
   "Initialize the board for the game. 0 is empty, 1 is player, 10 is computer."
-    (copy-list *initial-board*))
+  (list 'board 0 0 0 0 0 0 0 0 0))
 
 (defun start-game ()
   "Start a new tic-tac-toe game."
   (if (y-or-n-p "Want to start first? ")
-      (player-turn (init-board))
-      (computer-turn (init-board))))
+      (player-turn (make-board))
+      (computer-turn (make-board))))
 
 (defun check-game-over (board)
   "Check if the game is over and print a message if that is the case."
