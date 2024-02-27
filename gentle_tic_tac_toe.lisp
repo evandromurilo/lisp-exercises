@@ -45,7 +45,7 @@
   (print-board board)
   (unless (check-game-over board)
     (let ((pos (read-valid-pos board)))
-      (computer-turn (play *player* pos board)))))
+      (computer-turn (make-move *player* pos board)))))
 
 (defun computer-turn (board)
   "The computer takes a turn."
@@ -54,7 +54,7 @@
     (let ((move (calculate-move board)))
       (format t "~&~A~%" (move-explanation move))
       (player-turn
-       (play *computer* (move-pos move) board)))))
+       (make-move *computer* (move-pos move) board)))))
 
 (defun move-explanation (move)
   "Return the explanation for the move."
@@ -91,7 +91,7 @@
         pos
         (random-move board))))
 
-(defun play (player pos board)
+(defun make-move (player pos board)
   "Plays position for player on board."
   (setf (nth pos board) player)
   board)
