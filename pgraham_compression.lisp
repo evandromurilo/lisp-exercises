@@ -6,13 +6,13 @@
 
 (defun compr (lst last n)
   "Do the hard work for compress, should not be called isolated."
-  (cond ((null lst)
-         (list (n-elts last n))) ; end of list, compress last atom
-        ((equal (first lst) last)
-         (compr (rest lst) last (+ 1 n))) ; same as previous atom, keep going
-        (t
-         (cons (n-elts last n)
-               (compr (rest lst) (first lst) 1))))) ; new atom, compress previous atom and begin compressing the new one
+  (if (null lst)
+      (list (n-elts last n)) ; end of list, compress last atom
+      (let ((next (car lst)))
+        (if (equal next last)
+            (compr (cdr lst) last (+ 1 n)) ; same as previous atom, keep going
+            (cons (n-elts last n)
+                  (compr (rest lst) next 1)))))) ; new atom, compress previous atom and begin compressing the new one
          
 
 (defun n-elts (at n)
