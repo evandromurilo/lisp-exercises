@@ -1351,3 +1351,22 @@
          (setf *friends* (remove-if (lambda (x) (equal person x)) *friends*))
          'NOT-FRIENDS-ANYMORE)
         (t 'THIS-PERSON-IS-NOT-YOUR-FRIEND)))
+
+;; 10.5 Rewrite the following ugly function to use good Lisp style.
+
+(defun ugly (x y)
+  (when (> x y)
+    (setf temp y)
+    (setf y x)
+    (setf x temp))
+  (setf avg (/ (+ x y) 2.0))
+  (setf pct (* 100 (/ avg y)))
+  (list 'average avg 'is
+        pct 'percent 'of 'max y))
+
+(defun my-ugly (x y)
+  (let* ((m (max x y))
+        (avg (/ (+ x y) 2.0))
+        (pct (* 100 (/ avg m))))
+    (list 'average avg 'is pct 'percent 'of 'max m)))
+    
