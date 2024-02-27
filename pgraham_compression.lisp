@@ -12,10 +12,27 @@
         (if (equal next last)
             (compr (cdr lst) last (+ 1 n)) ; same as previous atom, keep going
             (cons (n-elts last n)
-                  (compr (rest lst) next 1)))))) ; new atom, compress previous atom and begin compressing the new one
+                  (compr (cdr lst) next 1)))))) ; new atom, compress previous atom and begin compressing the new one
          
-
 (defun n-elts (at n)
   "Return representation for atom at repeated n times."
   (cond ((equal 1 n) at)
         (t (list n at))))
+
+(defun uncompress (lst)
+  "Revert a compressed list to it's original state."
+  (if (null lst)
+      nil
+      (let ((elt (car lst))
+            (rest (uncompress (cdr lst))))
+        (if (consp elt)
+            (append (apply #'list-of elt)
+                    rest)
+            (cons elt rest)))))
+        
+(defun list-of (n elt)
+  "Repeat elt n times."
+  (if (zerop n)
+      nil
+      (cons elt (list-of (- n 1) elt))))
+      
