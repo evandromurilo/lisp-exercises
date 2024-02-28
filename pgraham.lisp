@@ -156,3 +156,39 @@
         (showdots (cdr lst))
         (format t ")"))))
 
+;; 3.9 Write a program to find the longest finite path through a network represented as in Section 3.15. The network may contain cycles.
+
+(defvar mynet '((a b d)
+                (b d c)
+                (d f)
+                (c e g)
+                (f e c)
+                (g e)))
+
+(defvar myothernet '((a b j)
+                     (b a c)
+                     (c d)
+                     (d e g)
+                     (e)
+                     (f d)
+                     (g f)
+                     (h g)
+                     (i h d f)
+                     (j i)))
+
+(defun longest-path (start end net)
+  (find-path start end net nil))
+
+(defun find-path (start end net tested)
+  "Encontra o maior caminho sem repetição entre start e end (quase não acredito que funcionou)."
+  (if (equal start end)
+      (list start)
+      (let ((queue (set-difference (cdr (assoc start net)) tested))) ;; the queue has all the paths from start that have not been tested already
+        (let ((paths (mapcar
+                      #'(lambda (elt) (find-path elt end net (cons start tested)))
+                      queue)))
+          (let ((longest (car (sort paths #'> :key #'length))))
+            (if (null longest)
+                nil
+                (cons start longest)))))))
+              
