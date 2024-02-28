@@ -30,3 +30,27 @@
       (if (equal 'a obj)
           (setf cnt (+ cnt 1))))
     cnt))
+
+;; Palindrome example from chapter 3
+
+(defun mirror? (s)
+  (let ((len (length s)))
+    (and (evenp len)
+         (let ((mid (/ len 2)))
+           (equal (subseq s 0 mid)
+                  (reverse (subseq s mid)))))))
+
+;; Nth gratest element example from chapter 3
+
+(defun nthmost (n lst)
+  (nth (- n 1)
+       (sort lst #'>)))
+
+;; Iterative reverse example from chapter 3
+
+(defun our-reverse (lst)
+  (let ((acc nil))
+    (dolist (elt lst)
+      (push elt acc))
+    acc))
+
