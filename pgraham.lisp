@@ -54,3 +54,105 @@
       (push elt acc))
     acc))
 
+;; 3.2 Write a version of union that preserves the order of the elements in the original lists.
+
+(defun new-union (a-list b-list)
+  (if (null b-list)
+      a-list
+      (let ((elt (car b-list))
+            (rest (cdr b-list)))
+        (if (member elt a-list)
+            (new-union a-list rest)
+            (new-union (append a-list (list elt)) rest)))))
+
+;; 3.3 Define a function that takes a list and returns a list indicating the number of times each (eql) element appears, sorted from most common element to least common.
+
+(defun occurrences (lst)
+  (let ((cnt nil))
+    (dolist (elt lst)
+      (let ((cnt-elt (assoc elt cnt)))
+        (if cnt-elt
+            (setf (cdr cnt-elt) (+ 1 (cdr cnt-elt)))
+            (push (cons elt 1) cnt))))
+    (sort cnt #'> :key #'cdr)))
+    
+
+;; 3.5 Suppose the function pos+ takes a list and returns a list of each element plus its position: (post+ '(7 5 1 4)) -> (7 6 3 7). Define this function using (a) recursion, (b) iteration, (c) mapcar.
+
+(defun rec-pos+ (lst)
+  (helper-rec-pos+ lst 0))
+
+(defun helper-rec-pos+ (lst n)
+  (if (null lst)
+      nil
+      (cons (+ n (car lst)) (helper-rec-pos+ (cdr lst) (+ 1 n)))))
+
+(defun iter-pos+ (lst)
+  (let ((i 0)
+        (res nil))
+    (dolist (elt lst)
+      (push (+ elt i) res)
+      (incf i))
+    (reverse res)))
+
+(defun map-pos+ (lst)
+  (let ((i 0))
+    (mapcar #'(lambda (elt)
+                (let ((new (+ elt i)))
+                  (incf i)
+                  new))
+            lst)))
+
+;; 3.6 After years of deliberation, a government comission has decided that lists should be represented by using the cdr to point to the first element and the car to point to the rest of the list. Define the government versions of the following functions: (a) cons (b) list (c) length (d) member.
+
+(defun gov-cons (a b)
+  (cons b a))
+
+(defun gov-list (lst)
+  (let ((new nil))
+    (dolist (elt lst)
+      (setf new (gov-cons elt new)))
+    new))
+
+(defun gov-length (lst)
+  (if (null lst)
+      0
+      (+ 1 (gov-length (car lst)))))
+
+(defun gov-member (elt lst)
+  (if (null lst)
+      nil
+      (if (equal (cdr lst) elt)
+          lst
+          (gov-member elt (car lst)))))
+
+;; 3.7 Modify the program in Figure 3.6 (compression) to use fewer cons cells.
+
+(defun compress (lst)
+  (if (consp lst)
+      (compr (cdr lst) (car lst) 1)
+      lst))
+
+(defun compr (lst last n)
+  (if (null lst)
+      (list (n-elts last n))
+      (let ((next (car lst)))
+        (if (equal next last)
+            (compr (cdr lst) last (+ 1 n))
+            (cons (n-elts last n)
+                  (compr (cdr lst) next 1))))))
+         
+(defun n-elts (at n)
+  (cond ((equal 1 n) at)
+        (t (cons n at))))
+
+;; 3.8 Define a function that takes a list and prints it in dot notation:
+
+(defun showdots (lst)
+  (if (null lst)
+      (format t "NIL")
+      (progn
+        (format t "(~S . " (car lst))
+        (showdots (cdr lst))
+        (format t ")"))))
+
