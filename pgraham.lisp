@@ -185,10 +185,10 @@
       (list start)
       (let ((queue (set-difference (cdr (assoc start net)) tested))) ;; the queue has all the paths from start that have not been tested already
         (let ((paths (mapcar
-                      #'(lambda (elt) (find-path elt end net (cons start tested)))
+                      #'(lambda (elt) (find-path elt end net (cons start tested))) ;; we add teh start node to the tested list, so we do not check it again
                       queue)))
           (let ((longest (car (sort paths #'> :key #'length))))
-            (if (null longest)
+            (if (null longest) ;; there was no path
                 nil
                 (cons start longest)))))))
               
