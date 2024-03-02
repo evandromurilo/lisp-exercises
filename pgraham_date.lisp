@@ -13,9 +13,9 @@
 
 (defun parse-date (str)
   (let ((toks (tokens str #'constituent 0)))
-    (list (str-as-int (first toks))
-          (month-as-int (second toks))
-          (str-as-int (third toks)))))
+    (list (read-integer (first toks))
+          (read-month   (second toks))
+          (read-integer (third toks)))))
 
 (defun tokens (str test start)
   (let ((p1 (position-if test str :start start)))
@@ -33,10 +33,10 @@
   (and (graphic-char-p c)
        (not (char= c #\  ))))
 
-(defun month-as-int (str)
+(defun read-month (str)
   (+ 1 (position str months :test #'string-equal)))
 
-(defun str-as-int (str)
+(defun read-integer (str)
   (let ((len (length str))
         (val 0))
     (do ((factor 1 (* factor 10))
