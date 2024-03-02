@@ -12,19 +12,26 @@
                      "Dec"))
 
 (defun parse-date (str)
-  (let ((date (split #\  str)))
-    (list (str-as-int (first date))
-          (month-as-int (second date))
-          (str-as-int (third date)))))
+  (let ((toks (tokens str #'constituent 0)))
+    (list (str-as-int (first toks))
+          (month-as-int (second toks))
+          (str-as-int (third toks)))))
 
-(defun split (char str)
-  (if (zerop (length str))
-      nil
-      (let ((pos1 (position char str)))
-        (if pos1
-            (cons (subseq str 0 pos1)
-                  (split char (subseq str (+ 1 pos1))))
-            (list str)))))
+(defun tokens (str test start)
+  (let ((p1 (position-if test str :start start)))
+    (if p1
+        (let ((p2 (position-if #'(lambda (c)
+                                   (not (funcall test c)))
+                               str :start p1)))
+          (cons (subseq str p1 p2)
+                (if p2
+                    (tokens str test p2)
+                    nil)))
+        nil)))
+
+(defun constituent (c)
+  (and (graphic-char-p c)
+       (not (char= c #\  ))))
 
 (defun month-as-int (str)
   (+ 1 (position str months :test #'string-equal)))
