@@ -1,4 +1,4 @@
-(defun binary-search (obj vec)
+(defun bin-search (obj vec)
   (let ((len (length vec)))
     (and (not (zerop len))
          (finder obj vec 0 (- len 1)))))
