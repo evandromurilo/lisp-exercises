@@ -21,7 +21,7 @@
        (not (char= c #\  ))))
 
 (defconstant month-names #("Jan" "Feb" "Mar" "Apr" "May" "Jun"
-                     "Jul" "Aug" "Sep" "Oct" "Nov" "Dec"))
+                           "Jul" "Aug" "Sep" "Oct" "Nov" "Dec"))
 
 (defun read-month (str)
   (let ((p (position str month-names :test #'string-equal)))
@@ -33,7 +33,7 @@
   (if (every #'digit-char-p str)
       (let ((accum 0))
         (dotimes (pos (length str))
-          (setf accum (+ (* acuum 10)
+          (setf accum (+ (* accum 10)
                          (digit-char-p (char str pos)))))
         accum)
       nil))
