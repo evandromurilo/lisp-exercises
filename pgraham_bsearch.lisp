@@ -7,6 +7,7 @@
   (/ (+ a b) 2))
 
 (defun finder (obj vec lo hi)
+  (format t "~A~%" (subseq vec lo (+ hi 1)))
   (if (equal lo hi)
       (if (eql obj (aref vec lo))
           obj
