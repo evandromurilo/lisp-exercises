@@ -14,7 +14,7 @@
       (let* ((mid (floor (average lo hi)))
              (obj2 (aref vec mid)))
         (if (> obj obj2)
-            (finder obj vec (+ 1 mid) hi)
+            (finder obj vec (+ mid 1) hi)
             (if (< obj obj2)
                 (finder obj vec lo (- mid 1))
                 obj)))))
