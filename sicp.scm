@@ -38,3 +38,20 @@
 
 (define (cbrt x)
   (cbrt-iter 1.0 x))
+
+;; 1.11 A function f is defined by the rule that f(n) = n if n < 3 and f(n) = f(n - 1) + 2f(n - 2) + 3f(n - 3) if n ≥ 3. Write a procedure that computes f by means of recursive process. Write a procedure that computes f by menas of an interative process.
+
+(define (f n)
+  (if (< n 3)
+      n
+      (+ (f (- n 1)) (f (- n 2)) (f (- n 3)))))
+
+(define (fb n)
+  (if (<= n 3)
+      n
+      (f-iter 0 1 2 (- n 2))))
+
+(define (f-iter a b c n)
+  (if (= 0 n)
+      c
+      (f-iter b c (+ a b c) (- n 1))))
