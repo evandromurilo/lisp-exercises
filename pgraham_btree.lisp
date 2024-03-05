@@ -15,3 +15,11 @@
                                         (node-right bst)
                                         order-fn)))))
 
+(defun bst-member (obj bst order-fn)
+  (if (null bst)
+      nil
+      (if (equal obj (node-obj bst))
+          bst
+          (if (funcall order-fn obj (node-obj bst))
+              (bst-member obj (node-left bst) order-fn)
+              (bst-member obj (node-right bst) order-fn)))))
