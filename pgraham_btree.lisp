@@ -25,3 +25,11 @@
             (if (funcall < obj elt)
                 (bst-find obj (node-l bst) <)
                 (bst-find obj (node-r bst) <))))))
+
+(defun bst-min (bst)
+  (and bst
+       (or (bst-min (node-l bst)) bst)))
+
+(defun bst-max (bst)
+  (and bst
+       (or (bst-max (node-r bst)) bst)))
