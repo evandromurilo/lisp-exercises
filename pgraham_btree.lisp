@@ -33,3 +33,32 @@
 (defun bst-max (bst)
   (and bst
        (or (bst-max (node-r bst)) bst)))
+
+(defun bst-remove (obj bst <)
+  (if (null bst)
+      nil
+      (let ((elt (node-elt bst))
+            (l (node-l bst))
+            (r (node-r bst)))
+        (if (equal obj elt)
+            (if (null l)
+                r
+                (if (null r)
+                    l
+                    (if (null (node-r l))
+                        (make-node :elt (node-elt l)
+                                   :l (node-l l)
+                                   :r r)
+                        (make-node :elt (node-elt l)
+                                   :l (node-l l)
+                                   :r (make-node
+                                       :elt (node-elt
+                                             (node-r l))
+                                       :r r)))))
+            (if (< obj elt)
+                (make-node :elt elt
+                           :r r
+                           :l (bst-remove obj l <))
+                (make-node :elt elt
+                           :l l
+                           :r (bst-remove obj r <)))))))
