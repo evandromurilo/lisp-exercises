@@ -55,3 +55,12 @@
   (if (= 0 n)
       c
       (f-iter b c (+ a b c) (- n 1))))
+
+;; 1.12 Write a procedure that computes elements of Pascal's triangle by means of a recursive process.
+
+(define (pascal n c)
+  (if (or (= n 0)
+          (= c 0)
+          (= c n))
+      1
+      (+ (pascal (- n 1) (- c 1)) (pascal (- n 1) c))))
