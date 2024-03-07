@@ -67,3 +67,10 @@
   (make-node :elt (node-elt (node-l bst))
              :l (percolate (node-l bst))
              :r (node-r bst)))
+
+(defun bst-traverse (fn nums)
+  (when nums
+    (bst-traverse fn (node-l nums))
+    (funcall fn (node-elt nums))
+    (bst-traverse fn (node-r nums))))
+                  
