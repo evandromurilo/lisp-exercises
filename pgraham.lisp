@@ -192,3 +192,32 @@
                 nil
                 (cons start longest)))))))
               
+;; 4.1 Define a function to take a square array (an array whose dimensions are (n n)) and rotate it 90º clockwise: (quarter-turn #2A((a b) (c d)) -> #2A((C A) (D B))
+
+(defun get-pos (n s)
+  (let* ((top (- s 1))
+        (right (+ top (- s 1)))
+        (bottom (+ right (- s 1)))
+        (end (+ bottom (- s 1))))
+    (cond ((< n top)
+           (list 0 n))
+          ((< n right)
+           (list (- n top) (- s 1)))
+          ((< n bottom)
+           (list (- s 1) (- bottom n)))
+          ((< n end)
+           (list (- end n) 0))
+          (t
+           '(0 0)))))
+
+(defun perimeter (s)
+  (+ (* 2 s) (* 2 (- s 2))))
+
+(defun quarter-turn (arr)
+  (let* ((new-arr (make-array (array-dimensions arr)))
+        (s (first (array-dimensions arr))))
+    (dotimes (i (perimeter s))
+      (setf (apply #'aref (cons new-arr (get-pos (+ 1 i) s)))
+            (apply #'aref (cons arr (get-pos i s)))))
+    new-arr))
+
