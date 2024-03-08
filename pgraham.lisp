@@ -221,3 +221,15 @@
             (apply #'aref (cons arr (get-pos i s)))))
     new-arr))
 
+;; 4.2 Read the description of reduce, then use it to define (a) copy-list (b) reverse (for lists).
+
+(defun my-copy-list (lst)
+  (reduce #'cons
+          lst
+          :initial-value nil
+          :from-end t))
+
+(defun my-reverse (lst)
+  (reduce #'(lambda (a b) (cons b a))
+          lst
+          :initial-value nil))
