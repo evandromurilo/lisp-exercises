@@ -266,3 +266,41 @@
           (or (member-ttree obj (ttree-l ttree))
               (member-ttree obj (ttree-r ttree))
               (member-ttree obj (ttree-c ttree))))))
+
+;; 4.4 Define a function that takes a BST and returns a list of its elements ordered from greatest to least.
+
+(defun list-bst (bst)
+  (if (null bst)
+      nil
+      (append (list-bst (node-l bst))
+              (list (node-elt bst))
+              (list-bst (node-r bst)))))
+
+;; 4.5 Define bst-adjoin. This function should take the same arguments as bst-insert, but should only insert the object if there is nothing eql to it in the tree.
+
+(defun bst-adjoin (obj bst <)
+  (if (null bst)
+      (make-node :elt obj)
+      (let ((elt (node-elt bst)))
+        (if (eql obj elt)
+            bst
+            (if (< obj elt)
+                (make-node :elt elt
+                           :l (bst-adjoin obj (node-l bst) <)
+                           :r (node-r bst))
+                (make-node :elt elt
+                           :l (node-l bst)
+                           :r (bst-adjoin obj (node-r bst) <)))))))
+
+;; 4.6 The contents of any hash table can be described by an assoc-list whose elements are (k . v), for each key-value pair in the hash table. Define a function that (a) takes an assoc-list and returns a corresponding hash table (b) takes a hash table and returns a corresponding assoc-list.
+
+(defun assoc-to-hash (lst)
+  (let ((ht (make-hash-table)))
+    (dolist (pair lst)
+      (setf (gethash (car pair) ht) (cdr pair)))
+    ht))
+
+(defun hash-to-assoc (ht)
+  (let ((lst nil))
+    (maphash #'(lambda (k v) (push (cons k v) lst)) ht)
+    lst))
