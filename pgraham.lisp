@@ -233,3 +233,36 @@
   (reduce #'(lambda (a b) (cons b a))
           lst
           :initial-value nil))
+
+;; 4.3 Define a structure to represent a tree where each node contains some data and has up to three children. Define (a) a function to copy such a tree (so that no node in the copy is eql to a node in the original) (b) a function that takes an object and such a tree, and returns true if the object is eql to the data field of one of the nodes.
+
+(defstruct ttree elt l c r)
+
+(defvar my-tree (make-ttree
+                 :elt 5
+                 :l (make-ttree
+                     :elt 3
+                     :l (make-ttree :elt 9)
+                     :c (make-ttree :elt 12)
+                     :r (make-ttree :elt 90))
+                 :r (make-ttree
+                     :elt 87
+                     :c (make-ttree :elt 91
+                                    :r (make-ttree :elt 102)))))
+
+(defun copy-ttree (ttree)
+  (if (null ttree)
+      nil
+      (make-ttree :elt (ttree-elt ttree)
+                  :l (copy-ttree (ttree-l ttree))
+                  :c (copy-ttree (ttree-c ttree))
+                  :r (copy-ttree (ttree-r ttree)))))
+                  
+(defun member-ttree (obj ttree)
+  (if (null ttree)
+      nil
+      (if (eql obj (ttree-elt ttree))
+          t
+          (or (member-ttree obj (ttree-l ttree))
+              (member-ttree obj (ttree-r ttree))
+              (member-ttree obj (ttree-c ttree))))))
