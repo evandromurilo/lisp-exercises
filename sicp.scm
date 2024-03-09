@@ -64,3 +64,20 @@
           (= c n))
       1
       (+ (pascal (- n 1) (- c 1)) (pascal (- n 1) c))))
+ 
+;; 1.16 Define a procedure that evolves an iterative exponentiation process that uses successive squareing and uses a logarithmic number of steps.
+
+(define (square b)
+  (* b b))
+
+(define (cube b)
+  (* b b b))
+
+(define (exp b n)
+  (exp-iter b n 1))
+
+(define (exp-iter b n extra)
+  (cond ((= n 0) (* 1 extra))
+        ((= n 1) (* b extra))
+        ((even? n) (exp-iter (square b) (/ n 2) extra))
+        (else (exp-iter (square b) (/ (- n 1) 2) (* b extra)))))
