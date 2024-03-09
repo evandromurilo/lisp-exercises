@@ -30,10 +30,11 @@
         nil)))
 
 (defun read-integer (str)
-  (if (every #'digit-char-p str)
-      (let ((accum 0))
-        (dotimes (pos (length str))
-          (setf accum (+ (* accum 10)
-                         (digit-char-p (char str pos)))))
-        accum)
-      nil))
+  (let ((accum 0))
+    (dotimes (pos (length str))
+      (let ((i (digit-char-p (char str pos))))
+        (if i
+            (setf accum (+ (* accum 10) i))
+            (return-from read-integer nil))))
+    accum))
+        
