@@ -92,7 +92,16 @@ E.g., (combine-all '((a) (b)) '((1) (2)))
   (apply #'append (mapcar fn the-list)))
 
 ;; Exercise 2.1 [m] Write a version of gnerate that uses cond but avoids calling rewrite twice.
-;; (só consegui pensar em colocar um let em volta do cond)
+
+(defun generate-a (phrase)
+  "Generate a random sentence of phrase."
+  (let ((choices nil))
+    (cond ((listp phrase)
+           (mappend #'generate phrase))
+          ((setf choices (rewrites phrase))
+           (generate (random-elt choices)))
+          (t (list phrase)))))
+  
 
 ;; Exercise 2.2 [m] Write a version of generate that explicitly differentiates between terminal symbols (those with no rewrite rules) and nonterminal symbols.
 
@@ -104,3 +113,16 @@ E.g., (combine-all '((a) (b)) '((1) (2)))
          (list phrase))
         (t
          (generate (random-elt (rewrites phrase))))))
+
+;; Exercise 2.3 [h] Write a trivial grammar for some other language. This can be a natural language other than English, or perhaps a subset of a computer language.
+
+(defparameter *pt-grammar*
+  '((oracao -> (sujeito verbo-direto objeto-direto))
+    (sujeito -> (artigo nome) pronome)
+    (artigo -> o um)
+    (nome -> homem cachorro gato rato carrapato carrapixo)
+    (pronome -> ele ela voce)
+    (verbo-direto -> pegou agarrou mordeu arranhou trapaceou)
+    (objeto-direto -> (artigo nome) pronome)))
+
+;; Exercise 2.4 [m]
