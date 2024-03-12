@@ -47,29 +47,21 @@
 
 (defun generate-all (phrase)
   "Generate a list of all possible expansions of this phrase."
-  (cond ((listp phrase)
-         (outer-permutate (mapcar #'generate-all phrase)))
+  (cond ((null phrase) (list nil))
+        ((listp phrase)
+         (combine-all (generate-all (first phrase))
+                      (generate-all (rest phrase))))
         ((rewrites phrase)
          (mappend #'generate-all (rewrites phrase)))
         (t (list (list phrase)))))
 
-(defun outer-permutate (lst)
-  (permutate (car lst) (cdr lst)))
-
-(defun permutate (a lst)
-  "Permutates the list of generations a with the lists of generations lst."
-  (cond ((null a) nil)
-        ((null lst) a)
-        (t (append (perm (car a) (permutate (car lst) (cdr lst)))
-              (permutate (cdr a) lst)))))
-         
-(defun perm (a lst)
-  "Permutates the generation a with the list of generations lst."
-  (if (null lst)
-      nil
-      (cons (append a (car lst))
-            (perm a (cdr lst)))))
-         
+(defun combine-all (xlist ylist)
+  "Return a list of lists formed by appending a y to an x.
+E.g., (combine-all '((a) (b)) '((1) (2)))
+-> ((A 1) (B 1) (A 2) (B 2))"
+  (mappend #'(lambda (y)
+               (mapcar #'(lambda (x) (append x y)) xlist))
+           ylist))
   
 (defun rule-lhs (rule)
   "The left-hand side of a rule."
