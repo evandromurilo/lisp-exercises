@@ -125,4 +125,14 @@ E.g., (combine-all '((a) (b)) '((1) (2)))
     (verbo-direto -> pegou agarrou mordeu arranhou trapaceou)
     (objeto-direto -> (artigo nome) pronome)))
 
-;; Exercise 2.4 [m]
+;; Exercise 2.4 [m] One way of describing combine-all is that it calculates the cross-product of the function append on the argument lists. Write the higher-order function cross-product, and define combine-all in terms of it.
+
+(defun cross-product (fn xlist ylist)
+  "Return a list of all (fn x y) values."
+  (mappend #'(lambda (y)
+               (mapcar #'(lambda (x) (funcall fn y x)) xlist))
+           ylist))
+
+(defun combine-all-b (xlist ylist)
+  "Return a list of lists formed by appending a y to an x."
+  (cross-product #'append xlist ylist))
