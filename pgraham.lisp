@@ -304,3 +304,120 @@
   (let ((lst nil))
     (maphash #'(lambda (k v) (push (cons k v) lst)) ht)
     lst))
+
+;; 5.2 Rewrite mystery to use cond.
+
+(defun mystery (x y)
+  (cond ((null y) nil)
+        ((eql (car y) x) 0)
+        (t (let ((z (mystery x (cdr y))))
+             (and z (+ z 1))))))
+
+;; 5.3 Define a function that returns the square of its argument, and which doe not compute the square if the argument is a positive integer less than or equal to 5.
+
+(defun my-square (x)
+  (unless (and (<= x 5) (> x 0))
+    (* x x)))
+
+;; 5.4 Rewrite num-month to use case instead of svref.
+
+(defun nmon (n)
+  (let ((m (position n month :test #'<)))
+    (values m (+ 1 (- n
+                      (case m
+                        (1 0)
+                        (2 31)
+                        (3 59)
+                        (4 90)
+                        (5 120)
+                        (6 151)
+                        (7 181)
+                        (8 212)
+                        (9 243)
+                        (10 273)
+                        (11 304)
+                        (12 365)))))))
+
+;; 5.5 Define iterative and recursive versions of a function that takes an object x and vector v, and returns a list of all the objects that immediately precede x in v: (precedes #\a "abracadabra") -> (#\c #\d #\r)
+
+(defun precedes-iter (x v)
+  (do* ((i 1 (+ i 1))
+        (lst nil))
+       ((> i (- (length v) 1)) lst)
+    (when (eql x (aref v i))
+      (push (aref v (- i 1)) lst))))
+
+(defun precedes-iter (x v)
+  (let ((lst nil))
+    (dotimes (i (length v) lst)
+      (when (and (> i 0)
+                 (eql x (aref v i)))
+        (push (aref v (- i 1)) lst)))))
+
+(defun precedes-iter (x v)
+  (do ((i 1 (+ i 1))
+       (j 0 (+ j 1))
+       (lst nil))
+      ((> (+ i 1) (length v)) lst)
+    (when (eql x (aref v i))
+      (push (aref v j) lst))))
+
+(defun precedes-rec (x v)
+  (prec x v 1))
+
+(defun prec (x v i)
+  (cond ((> (+ i 1) (length v))
+         nil)
+        ((eql x (aref v i))
+         (cons (aref v (- i 1)) (prec x v (+ i 1))))
+        (t (prec x v (+ i 1)))))
+    
+;; 5.6 Define iterative and recursive versions of a function that takes an object and a list, and returns a new list in which the object appears between each pair of elements in the original list: (intersperse '- '(a b c d)) -> (A - B - C - D)
+
+(defun intersperse-iter (x original)
+  (let ((new nil))
+    (dolist (elt original (reverse (cdr new)))
+      (push elt new)
+      (push x new))))
+
+(defun intersperse-iter (x original)
+  (do* ((lst original (cdr lst))
+        (new (list (car lst)) (append new (list x (car lst)))))
+       ((null (cdr lst)) new)))
+
+(defun intersperse (x lst)
+  (cond ((null lst) nil)
+        ((null (cdr lst)) lst)
+        (t (append (list (car lst) x)
+                   (intersperse x (cdr lst))))))
+      
+;; 5.7 Define a function that takes a list of numbers and returns true if the difference between each successive pair of them is 1, using (a) recursion (b) do (c) mapc and return.
+
+(defun sequence-p (lst)
+  (let ((current (car lst))
+        (next (cadr lst)))
+    (if (null next)
+      t
+      (and (= (abs (- next current)) 1)
+           (sequence-p (cdr lst))))))
+
+(defun sequence-p (original)
+  (or (< (length original) 2)
+      (do* ((lst original (cdr lst))
+            (current (car lst) (car lst))
+            (next (cadr lst) (cadr lst)))
+          ((or (null (cdr lst))
+               (> (abs (- current next)) 1))
+           (null (cdr lst))))))
+
+(defun sequence-p (original)
+  (block head
+    (mapc #'(lambda (x y)
+              (when (> (abs (- x y)) 1)
+                (return-from head nil)))
+          original
+          (cdr original))
+    t))
+               
+        
+
