@@ -3,7 +3,8 @@
 (setf minnet '((a b c) (b c) (c d)))
 
 (defun shortest-path (start end net)
-  (bfs end (list (list start)) net))
+  (catch 'found
+    (bfs end (list (list start)) net)))
 
 (defun bfs (end queue net)
   "Breadth-first search"
@@ -13,10 +14,12 @@
         (let ((node (car path)))
           (if (eql node end)
               (reverse path)
-              (bfs end
-                   (append (cdr queue)
-                           (new-paths path node net))
-                   net))))))
+              (let ((nps (new-paths path node net)))
+                (if (member end nps :key #'car)
+                    (throw 'found (cons end (reverse path)))
+                    (bfs end
+                         (append (cdr queue) nps)
+                         net))))))))
 
 (defun new-paths (path node net)
   (mapcar #'(lambda (n)

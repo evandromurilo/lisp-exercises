@@ -419,5 +419,32 @@
           (cdr original))
     t))
                
-        
+;; 5.8 Define a single recursive function that returns, as two values, the maximum and minimum elements of a vector.
 
+(defun min-max (v)
+  (do* ((i 0 (+ i 1))
+        (min (aref v 0))
+        (max (aref v 0)))
+       ((> (+ i 1) (length v)) (values min max))
+    (let ((elt (aref v i)))
+      (when (< elt min)
+        (setf min elt))
+      (when (> elt max)
+        (setf max elt)))))
+
+(defun min-max (v)
+  (let ((first (aref v 0)))
+    (minmax v 1 first first)))
+
+(defun minmax (v i min max)
+  (if (> (+ i 1) (length v))
+      (values min max)
+      (let ((elt (aref v i)))
+        (cond ((> elt max)
+               (minmax v (+ i 1) min elt))
+              ((< elt min)
+               (minmax v (+ i 1) elt max))
+              (t
+               (minmax v (+ i 1) min max))))))
+
+;; The program in Figure 3.12 continues to search as the first complete path works its way through the queue. In broad searches this would be a problem. (a) Using catch and throw, modify the program to return the first complete path as soon as it is discovered. (b) Rewrite the program to do the same thing without using catch and throw. (done directly in pgraham_shortest_path.lisp
