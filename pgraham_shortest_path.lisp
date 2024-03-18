@@ -3,8 +3,7 @@
 (setf minnet '((a b c) (b c) (c d)))
 
 (defun shortest-path (start end net)
-  (catch 'found
-    (bfs end (list (list start)) net)))
+    (bfs end (list (list start)) net))
 
 (defun bfs (end queue net)
   "Breadth-first search"
@@ -16,7 +15,7 @@
               (reverse path)
               (let ((nps (new-paths path node net)))
                 (if (member end nps :key #'car)
-                    (throw 'found (cons end (reverse path)))
+                    (reverse (cons end path))
                     (bfs end
                          (append (cdr queue) nps)
                          net))))))))
