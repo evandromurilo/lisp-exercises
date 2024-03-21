@@ -5,9 +5,13 @@
   (find-divisor n 2))
 
 (define (find-divisor n test-divisor)
+  (define (next)
+    (if (= test-divisor 2)
+        3
+        (+ test-divisor 2)))
   (cond ((> (square test-divisor) n) n)
         ((divides? test-divisor n) test-divisor)
-        (else (find-divisor n (+ test-divisor 1)))))
+        (else (find-divisor n (next)))))
 
 (define (divides? a b)
   (= (remainder b a) 0))
@@ -56,3 +60,4 @@
            (timed-prime-test i start-time)
            (do-search (+ i 1) start-time))))
   (do-search from (current-time)))
+
