@@ -1,0 +1,27 @@
+(defun compose (&rest fs)
+  #'(lambda (&rest args)
+      (let* ((funs (reverse fs))
+             (x (apply (car funs) args)))
+        (dolist (f (cdr funs))
+          (setf x (funcall f x)))
+        x)))
+
+(defun disjoin (&rest fs)
+  #'(lambda (obj)
+      (dolist (f fs)
+        (when (funcall f obj)
+          (return t)))))
+
+(defun conjoin (&rest fs)
+  #'(lambda (obj)
+      (dolist (f fs t)
+        (when (not (funcall f obj))
+          (return nil)))))
+
+(defun curry (f &rest args)
+  #'(lambda (&rest other-args)
+      (apply f (append args other-args))))
+
+(defun rcurry (f &rest args)
+  #'(lambda (&rest other-args)
+      (apply f (append other-args args))))
