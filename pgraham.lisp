@@ -448,3 +448,92 @@
                (minmax v (+ i 1) min max))))))
 
 ;; The program in Figure 3.12 continues to search as the first complete path works its way through the queue. In broad searches this would be a problem. (a) Using catch and throw, modify the program to return the first complete path as soon as it is discovered. (b) Rewrite the program to do the same thing without using catch and throw. (done directly in pgraham_shortest_path.lisp
+
+;; 6.1 Define a version of tokens (page 67) that takes :test and :start arguments defaulting to #'constituent and 0 respectively. (done directly in pgraham_date.lisp)
+
+;; 6.2 Define a version of bi-search (page 60) that takes :key, :test, :start, and :end arguments with the usual meaning and defaults.
+
+(defun bin-search (obj vec &key (key #'identity) (test #'eql) (start 0) (end (- (length vec) 1)))
+  (if (> start end)
+      nil
+      (if (equal start end)
+          (if (funcall test obj (funcall key (aref vec start)))
+              obj
+              nil)
+          (let* ((mid (floor (average start end)))
+                 (obj2 (funcall key (aref vec mid))))
+            (if (> obj obj2)
+                (bin-search obj vec :start (+ mid 1) :end end :key key :test test)
+                (if (< obj obj2)
+                    (bin-search obj vec :start start :end (- mid 1) :key key :test test)
+                    obj))))))
+
+;; 6.3 Define a function that takes any number of arguments and returns the number of arguments passed to it.
+
+(defun count-args (&rest args)
+  (length args))
+
+;; 6.4 Modify most (page 105) to return, as two values, the two highest-scoring elements of a list.
+
+(defun most (fn lst)
+  (if (null lst)
+      (values nil nil)
+      (let* ((wins (car lst))
+             (second-place nil)
+             (second-place-score nil)
+             (max (funcall fn wins)))
+        (dolist (obj (cdr lst))
+          (let ((score (funcall fn obj)))
+            (if (> score max)
+                (setf second-place wins
+                      second-place-score max
+                      wins obj
+                      max score)
+                (when (> score second-place-score)
+                  (setf second-place obj
+                        second-place-score score)))))
+        (values wins second-place))))
+
+;; 6.5 Define remove-if (no keywords) in terms of filter (page 105).
+
+(defun our-remove-if (fn lst)
+  (filter #'(lambda (x)
+              (let ((val (funcall fn x)))
+                (and (not val) x)))
+          lst))
+
+;; 6.6 Define a function that takes one argument, a number, and returns the greatest argument passed to it so far.
+
+(let ((max nil))
+  (defun remember-max (n)
+    (if (or (null max) (> n max))
+        (setf max n)
+        max)))
+         
+;; 6.7 Define a function that takes one argument, a number, and returns true if it is greater than the argument passed to the function the last time it was called. The function should return nil the first time it is called.
+
+(let ((last nil))
+  (defun remember-max2 (n)
+    (if (null last)
+        (progn
+          (setf last n)
+          nil)
+        (max last (setf last n)))))
+
+;; 6.8 Suppose expensive is a function of one argument, an integer between 0 and 100 inclusive, that returns the result of a time-consuming computation. Define a function frugal that returns the same answer, but only calls expensive when given an argument it has not seen before.
+
+(defun expensive (n)
+  (random n))
+
+(let ((cache (make-hash-table)))
+  (defun frugal (n)
+    (multiple-value-bind (val found) (gethash n cache)
+      (if found
+          val
+          (setf (gethash n cache) (expensive n))))))
+  
+;; 6.9 Define a function like apply, but where any number printed out before it returns will be printed, by default, in octal (base 8).
+
+(defun octal-apply (fn &rest args)
+  (let ((*print-base* 8))
+    (apply fn args)))

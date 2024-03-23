@@ -1,10 +1,10 @@
 (defun parse-date (str)
-  (let ((toks (tokens str #'constituent 0)))
+  (let ((toks (tokens str)))
     (list (read-integer (first toks))
           (read-month   (second toks))
           (read-integer (third toks)))))
 
-(defun tokens (str test start)
+(defun tokens (str &key (test #'constituent) (start 0))
   (let ((p1 (position-if test str :start start)))
     (if p1
         (let ((p2 (position-if #'(lambda (c)
@@ -12,7 +12,7 @@
                                str :start p1)))
           (cons (subseq str p1 p2)
                 (if p2
-                    (tokens str test p2)
+                    (tokens str :test test :start p2)
                     nil)))
         nil)))
 
