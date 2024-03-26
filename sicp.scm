@@ -192,3 +192,7 @@
 
 ;; 1.33 b. Show how to express the product of all the positive integers less than n that are relatively prime to n (i.e., all positive integers i < n such that GCD(i, n) = 1)
 
+(define (my-product n)
+  (define (relatively-prime i)
+    (= (gcd i n)))
+  (filtered-accumulate * 1 relatively-prime identity 1 inc (- n 1)))
