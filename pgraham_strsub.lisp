@@ -84,6 +84,10 @@
   (when (< (buf-used b) (buf-new b))
     (bref b (incf (buf-used b)))))
 
+(defun buf-reset (b)
+  (setf (buf-used b) (buf-start b)
+        (buf-new  b) (buf-end   b)))
+
 (defun buf-clear (b)
   (setf (buf-start b) -1 (buf-used b) -1
         (buf-new   b) -1 (buf-end  b) -1))
@@ -93,12 +97,12 @@
       ((> i (buf-end b)))
     (princ (bref b i) str)))
     
-
 (defun file-subst (search replace inpath outpath)
   (with-open-file (instr inpath)
     (with-open-file (outstr outpath :direction :output :if-exists :supersede)
       (stream-subst search replace instr outstr))))
 
+;; my take
 (defun stream-subst (search replace instr outstr)
   (let* ((slen (length search))
          (buf (new-buf slen))
@@ -119,3 +123,34 @@
             (setf i 0))))
     (buf-flush buf outstr)))
                 
+;; pg's
+(defun stream-subst (old new in out)
+  (let* ((pos 0)
+         (len (length old))
+         (buf (new-buf len))
+         (from-buf nil))
+    (do ((c (read-char in nil :eof)
+            (or (setf from-buf (buf-next buf))
+                (read-char in nil :eof))))
+        ((eql c :eof))
+      (cond ((char= c (char old pos))
+             (incf pos)
+             (cond ((= pos len)            ; 3
+                    (princ new out)
+                    (setf pos 0)
+                    (buf-clear buf))
+                   ((not from-buf)         ; 2
+                    (buf-insert c buf))))
+            ((zerop pos)                   ; 1
+             (princ c out)
+             (when from-buf
+               (buf-pop buf)
+               (buf-reset buf)))
+            (t                            ; 4
+             (unless from-buf
+               (buf-insert c buf))
+             (princ (buf-pop buf) out)
+             (buf-reset buf)
+             (setf pos 0))))
+    (buf-flush buf out)))
+         
