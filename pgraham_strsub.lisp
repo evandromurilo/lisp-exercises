@@ -9,15 +9,17 @@
             (if (eql (+ in-match 1) slen)
                 (progn
                   (format t replace)
+                  (setf buffer nil)
                   (setf in-match 0))
                 (progn
-                  (push buffer c)
+                  (push c buffer)
                   (incf in-match)))
             (if (null buffer)
                 (format t (string c))
                 (progn
                   (setf in-match 0)
                   (format t (list-to-str (reverse buffer)))
+                  (setf buffer nil)
                   (format t (string c)))))))))
 
 (defun strsub (subject search replace)
