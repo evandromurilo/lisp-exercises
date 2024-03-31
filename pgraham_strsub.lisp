@@ -1,3 +1,25 @@
+(defun fsub (path search replace)
+  (with-open-file (f path :direction :input)
+    (let ((in-match 0)
+          (slen (length search))
+          (buffer nil))
+      (do ((c (read-char f nil 'eof) (read-char f nil 'eof)))
+          ((eql c 'eof))
+        (if (eql c (aref search in-match))
+            (if (eql (+ in-match 1) slen)
+                (progn
+                  (format t replace)
+                  (setf in-match 0))
+                (progn
+                  (push buffer c)
+                  (incf in-match)))
+            (if (null buffer)
+                (format t (string c))
+                (progn
+                  (setf in-match 0)
+                  (format t (list-to-str (reverse buffer)))
+                  (format t (string c)))))))))
+
 (defun strsub (subject search replace)
   (list-to-str (sub (seq-to-list subject)
                     (seq-to-list search)
