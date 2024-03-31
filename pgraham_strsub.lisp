@@ -16,7 +16,9 @@
             (progn
               (setf in-match 0)
               (princ (list-to-str (reverse buffer)))
-              (setf buffer nil)))))))
+              (setf buffer nil))))
+      (unless (null buffer)
+        (princ (list-to-str (reverse buffer)))))))
 
 (defun strsub (subject search replace)
   (list-to-str (sub (seq-to-list subject)
@@ -114,5 +116,6 @@
           (progn
             (buf-flush buf outstr)
             (buf-clear buf)
-            (setf i 0))))))
+            (setf i 0))))
+    (buf-flush buf outstr)))
                 
