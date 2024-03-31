@@ -93,4 +93,28 @@
       ((> i (buf-end b)))
     (princ (bref b i) str)))
     
-        
+
+(defun file-subst (search replace inpath outpath)
+  (with-open-file (instr inpath)
+    (with-open-file (outstr outpath :direction :output :if-exists :supersede)
+      (stream-subst search replace instr outstr))))
+
+(defun stream-subst (search replace instr outstr)
+  (let* ((slen (length search))
+         (buf (new-buf slen))
+         (i 0))
+    (do ((c (read-char instr nil 'eof) (read-char instr nil 'eof)))
+        ((eql c 'eof))
+      (buf-insert c buf)
+      (if (eql c (aref search i))
+          (if (eql (+ i 1) slen)
+              (progn
+                (princ replace outstr)
+                (buf-clear buf)
+                (setf i 0))
+              (incf i))
+          (progn
+            (buf-flush buf outstr)
+            (buf-clear buf)
+            (setf i 0))))))
+                
