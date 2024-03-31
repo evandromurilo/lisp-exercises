@@ -5,22 +5,18 @@
           (buffer nil))
       (do ((c (read-char f nil 'eof) (read-char f nil 'eof)))
           ((eql c 'eof))
+        (push c buffer)
         (if (eql c (aref search in-match))
             (if (eql (+ in-match 1) slen)
                 (progn
-                  (format t replace)
+                  (princ replace)
                   (setf buffer nil)
                   (setf in-match 0))
-                (progn
-                  (push c buffer)
-                  (incf in-match)))
-            (if (null buffer)
-                (format t (string c))
-                (progn
-                  (setf in-match 0)
-                  (format t (list-to-str (reverse buffer)))
-                  (setf buffer nil)
-                  (format t (string c)))))))))
+                (incf in-match))
+            (progn
+              (setf in-match 0)
+              (princ (list-to-str (reverse buffer)))
+              (setf buffer nil)))))))
 
 (defun strsub (subject search replace)
   (list-to-str (sub (seq-to-list subject)
