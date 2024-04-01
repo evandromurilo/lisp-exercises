@@ -576,3 +576,5 @@
       (dotimes (j cols)
         (format t "~10,2F " (aref arr i j)))
       (terpri))))
+
+;; 7.5 Modify stream-subst to allow wildcards in the pattern. If the character + occurs in old, it should match any input character. (done in pgraham_strsub.lisp)
