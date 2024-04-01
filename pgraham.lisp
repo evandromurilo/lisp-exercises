@@ -567,3 +567,12 @@
             (when (not (eql (read-line instr nil 'eof) 'eof))
               (terpri outstr))
             (write-char c outstr))))))
+
+;; 7.4 Define a function that takes a two-dimensional array of floats and displays it in neat columns. Each element should be printed with two digits after the decimal point, in a field 10 characters wide. You will need array-dimensions (page 361).
+
+(defun print-columns (arr)
+  (destructuring-bind (lines cols) (array-dimensions arr)
+    (dotimes (i lines)
+      (dotimes (j cols)
+        (format t "~10,2F " (aref arr i j)))
+      (terpri))))
