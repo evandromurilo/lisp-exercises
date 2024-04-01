@@ -537,3 +537,33 @@
 (defun octal-apply (fn &rest args)
   (let ((*print-base* 8))
     (apply fn args)))
+
+;; 7.1 Define a function that takes a filename and returns a list of strings representing each line in the file.
+
+(defun explode (path)
+  (with-open-file (str path)
+    (do ((lines nil)
+         (cur (read-line str nil 'eof) (read-line str nil 'eof)))
+        ((eql cur 'eof) (reverse lines))
+      (push cur lines))))
+
+;; 7.2 Define a function that takes a filename and returns a list of the expressions in the file.
+
+(defun explode-exp (path)
+  (with-open-file (str path)
+    (do ((lines nil)
+         (cur (read str nil 'eof) (read str nil 'eof)))
+        ((eql cur 'eof) (reverse lines))
+      (push cur lines))))
+
+;; 7.3 Suppose that in some format for text files, comments are indicated by a % character. Everything from this character to the end of the line is ignored. Define a function that takes two filenames, and writes to the second file a copy of the first, minus comments.
+
+(defun remove-comments (in out)
+  (with-open-file (instr in)
+    (with-open-file (outstr out :direction :output :if-exists :supersede)
+      (do ((c (read-char instr nil 'eof) (read-char instr nil 'eof)))
+          ((eql c 'eof))
+        (if (char= c #\%)
+            (when (not (eql (read-line instr nil 'eof) 'eof))
+              (terpri outstr))
+            (write-char c outstr))))))
