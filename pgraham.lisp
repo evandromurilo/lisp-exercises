@@ -578,3 +578,5 @@
       (terpri))))
 
 ;; 7.5 Modify stream-subst to allow wildcards in the pattern. If the character + occurs in old, it should match any input character. (done in pgraham_strsub.lisp)
+
+;; 7.6 Modify stream-subst so that the pattern can include an element that matches any digit character, an element that matches any alphanumeric character, or an element that matches any character. The pattern must also be able to match any specific input character. (Hint: old can no longer be a string.) (done in pgraham_strsub.lisp)

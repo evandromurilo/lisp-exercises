@@ -133,7 +133,7 @@
             (or (setf from-buf (buf-next buf))
                 (read-char in nil :eof))))
         ((eql c :eof))
-      (cond ((match-char (char old pos) c)
+      (cond ((match-char (nth pos old) c)
              (incf pos)
              (cond ((= pos len)            ; 3
                     (princ new out)
@@ -155,6 +155,13 @@
     (buf-flush buf out)))
          
 (defun match-char (a b)
-  (if (char= a #\+)
-      t
-      (char= a b)))
+  (cond ((typep a 'character)
+         (char= a b))
+        ((eql a 'd)
+         (digit-char-p b))
+        ((eql a 'a)
+         (alphanumericp b))
+        ((eql a '+)
+         t)
+        (t
+         nil)))
