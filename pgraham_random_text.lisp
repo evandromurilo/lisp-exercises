@@ -7,13 +7,16 @@
   (reset-table)
   (with-open-file (str path)
     (let ((word (make-string 100))
+          (prev nil)
           (i 0))
       (do ((ch (read-char str nil 'eof) (read-char str nil 'eof)))
           ((eql ch 'eof) nil)
         (if (punc-p ch)
             (progn
-              (add-word (subseq word 0 i))
-              (setf i 0))
+              (let ((new-word (subseq word 0 i)))
+                (add-word new-word prev)
+                (setf prev new-word)
+                (setf i 0)))
             (progn
               (setf (char word i) ch)
               (incf i))))))
@@ -32,5 +35,41 @@
               (incf (cdr pair)))))))
 
 (defun punc-p (ch)
-  (case ch ((#\  #\. #\, #\! #\?) t)
+  (case ch ((#\  #\. #\, #\! #\? #\Newline #\Return) t)
             (otherwise nil)))
+
+(defun generate (n)
+  (implode " "  (gen nil n)))
+
+(defun implode (separator lst)
+  (let ((str (car lst)))
+    (dolist (elt (cdr lst))
+      (setf str (concatenate 'string str separator elt)))
+    str))
+
+(defun gen (prev n)
+  (if (= n 0)
+      nil
+      (let ((word (gen-word prev)))
+        (cons word (gen word (- n 1))))))
+
+(defun gen-word (prev)
+  (if (null prev)
+      (random-word)
+      (let ((related (cdr (gethash prev word-table))))
+        (if (null related)
+            (random-word)
+            (car (random-elt related))))))
+
+(defun random-word ()
+  (random-elt (keys word-table)))
+
+(defun random-elt (lst)
+  (nth (random (length lst)) lst))
+
+(defun keys (hash)
+  (let ((keys nil))
+    (maphash #'(lambda (k v) (push k keys)) hash)
+    keys))
+
+  
