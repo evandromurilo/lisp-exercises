@@ -12,11 +12,12 @@
       (do ((ch (read-char str nil 'eof) (read-char str nil 'eof)))
           ((eql ch 'eof) nil)
         (if (punc-p ch)
-            (progn
-              (let ((new-word (subseq word 0 i)))
-                (add-word new-word prev)
-                (setf prev new-word)
-                (setf i 0)))
+            (when (> i 0)
+              (progn
+                (let ((new-word (subseq word 0 i)))
+                  (add-word new-word prev)
+                  (setf prev new-word)
+                  (setf i 0))))
             (progn
               (setf (char word i) ch)
               (incf i))))))
@@ -59,7 +60,19 @@
       (let ((related (cdr (gethash prev word-table))))
         (if (null related)
             (random-word)
-            (car (random-elt related))))))
+            (random-elt (distribute related))))))
+
+(defun distribute (lst)
+  (if (null lst)
+      nil
+      (let ((pair (car lst)))
+        (append (dist (car pair) (cdr pair))
+                (distribute (cdr lst))))))
+
+(defun dist (elt n)
+  (if (zerop n)
+      nil
+      (cons elt (dist elt (- n 1)))))
 
 (defun random-word ()
   (random-elt (keys word-table)))
