@@ -46,7 +46,9 @@
 (defun implode (separator lst)
   (let ((str (car lst)))
     (dolist (elt (cdr lst))
-      (setf str (concatenate 'string str separator elt)))
+      (if (punc-p (char elt 0))
+          (setf str (concatenate 'string str elt))
+          (setf str (concatenate 'string str separator elt))))
     str))
 
 (defun gen (prev n)
