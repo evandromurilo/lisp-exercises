@@ -1,7 +1,7 @@
-(setf word-table (make-hash-table :test #'equal))
+(defparameter *words* (make-hash-table :test #'equal :size 10000))
 
 (defun reset-table ()
-  (setf word-table (make-hash-table :test #'equal)))
+  (setf *words* (make-hash-table :test #'equal)))
 
 (defun read-text (path)
   (reset-table)
@@ -25,15 +25,15 @@
   (show-table))
 
 (defun show-table ()
-  (maphash #'(lambda (k v) (format t "~A: ~A~%" k v)) word-table))
+  (maphash #'(lambda (k v) (format t "~A: ~A~%" k v)) *words*))
 
 (defun add-word (word prev)
-  (let ((word-assoc (gethash word word-table)))
+  (let ((word-assoc (gethash word *words*)))
     (if (null word-assoc)
-        (setf (gethash word word-table) (list (cons prev 1)))
+        (setf (gethash word *words*) (list (cons prev 1)))
         (let ((pair (assoc prev word-assoc)))
           (if (null pair)
-              (setf (gethash word word-table) (push (cons prev 1) word-assoc))
+              (setf (gethash word *words*) (push (cons prev 1) word-assoc))
               (incf (cdr pair)))))))
 
 (defun punc-p (ch)
@@ -60,7 +60,7 @@
 (defun gen-word (prev)
   (if (null prev)
       (random-word)
-      (let ((related (cdr (gethash prev word-table))))
+      (let ((related (cdr (gethash prev *words*))))
         (if (null related)
             (random-word)
             (random-elt (distribute related))))))
@@ -78,7 +78,7 @@
       (cons elt (dist elt (- n 1)))))
 
 (defun random-word ()
-  (random-elt (keys word-table)))
+  (random-elt (keys *words*)))
 
 (defun random-elt (lst)
   (nth (random (length lst)) lst))
