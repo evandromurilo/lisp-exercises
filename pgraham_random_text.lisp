@@ -1,12 +1,14 @@
 (defparameter *words* (make-hash-table :test #'equal :size 10000))
 
+(defconstant maxword 100)
+
 (defun reset-table ()
   (setf *words* (make-hash-table :test #'equal)))
 
 (defun read-text (path)
   (reset-table)
   (with-open-file (str path)
-    (let ((word (make-string 100))
+    (let ((word (make-string maxword))
           (prev nil)
           (i 0))
       (do ((ch (read-char str nil 'eof) (read-char str nil 'eof)))
