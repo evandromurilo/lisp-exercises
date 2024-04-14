@@ -11,16 +11,17 @@
           (i 0))
       (do ((ch (read-char str nil 'eof) (read-char str nil 'eof)))
           ((eql ch 'eof) nil)
-        (if (punc-p ch)
-            (when (> i 0)
-              (progn
-                (let ((new-word (subseq word 0 i)))
-                  (add-word new-word prev)
-                  (setf prev new-word)
-                  (setf i 0))))
-            (progn
-              (setf (char word i) ch)
-              (incf i))))))
+        (cond ((alpha-char-p ch)
+               (setf (char word i) ch)
+               (incf i))
+              ((> i 0)
+               (let ((new-word (subseq word 0 i)))
+                 (add-word new-word prev)
+                 (setf prev new-word)
+                 (setf i 0)
+                 (when (punc-p ch)
+                   (add-word (string ch) prev)
+                   (setf prev (string ch)))))))))
   (show-table))
 
 (defun show-table ()
@@ -36,11 +37,11 @@
               (incf (cdr pair)))))))
 
 (defun punc-p (ch)
-  (case ch ((#\  #\. #\, #\! #\? #\Newline #\Return) t)
+  (case ch ((#\. #\, #\! #\?) t)
             (otherwise nil)))
 
 (defun generate (n)
-  (implode " "  (gen nil n)))
+  (implode " "  (reverse (gen nil n))))
 
 (defun implode (separator lst)
   (let ((str (car lst)))
