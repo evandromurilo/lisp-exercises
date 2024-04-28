@@ -580,3 +580,26 @@
 ;; 7.5 Modify stream-subst to allow wildcards in the pattern. If the character + occurs in old, it should match any input character. (done in pgraham_strsub.lisp)
 
 ;; 7.6 Modify stream-subst so that the pattern can include an element that matches any digit character, an element that matches any alphanumeric character, or an element that matches any character. The pattern must also be able to match any specific input character. (Hint: old can no longer be a string.) (done in pgraham_strsub.lisp)
+
+;; 9.1 Define a function that takes a list of reals and returns true if they are in nondecreasing order.
+
+(defun nondecreasing (lst)
+  (apply #'<= lst))
+
+;; 9.2 Define a function that takes an integer number of cents and returns four values showing how to make that number out of 25-, 10-, 5- and 1-cent pieces, using the smallest total number of coins.
+
+(defun change (total)
+  (values-list (mapcar
+                #'(lambda (coin)
+                    (multiple-value-bind (n-coins new-total) (floor total coin)
+                      (setf total new-total)
+                      n-coins))
+                '(25 10 5 1))))
+
+;; esse aqui foi o gpt que fez, achei legal
+(defun change-gpt (cents)
+  (let ((quarters (floor cents 25))
+        (dimes (floor (mod cents 25) 10))
+        (nickels (floor (mod cents 10) 5))
+        (pennies (mod cents 5)))
+    (values quarters dimes nickels pennies)))
