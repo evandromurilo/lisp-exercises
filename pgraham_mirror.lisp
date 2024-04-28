@@ -7,3 +7,9 @@
                   (not (eql (elt s forward)
                             (elt s back))))
               (> forward back))))))
+
+(defun palindrome? (s)
+  (let ((mid (/ (length s) 2)))
+    (equal (subseq s 0 (floor mid))
+           (reverse (subseq s (ceiling mid))))))
+    
